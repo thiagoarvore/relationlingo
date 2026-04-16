@@ -1,0 +1,57 @@
+{% load widget_tweaks %}
+<div id="daily-report-form-shell">
+    {% if inline_success_message %}
+        <div class="alert alert-success">{{ inline_success_message }}</div>
+    {% endif %}
+    {% if no_pair_message %}
+        <div class="alert alert-warning">{{ no_pair_message }}</div>
+    {% endif %}
+    {% if has_report_today and today_report_message %}
+        <div class="alert alert-info">{{ today_report_message }}</div>
+    {% endif %}
+
+    {% if has_pair and not has_report_today %}
+        <form
+            method="post"
+            novalidate
+            hx-post="{% url 'reports:create' %}"
+            hx-target="#daily-report-form-shell"
+            hx-swap="outerHTML"
+        >
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label class="form-label" for="{{ form.critic.id_for_label }}">{{ form.critic.label }}</label>
+                {% render_field form.critic class+="form-control form-control-lg" %}
+                {% for error in form.critic.errors %}
+                    <div class="text-danger small mt-1">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="{{ form.critic_level.id_for_label }}">{{ form.critic_level.label }}</label>
+                {% render_field form.critic_level class+="form-control form-control-lg" %}
+                <div class="form-text">
+                    <span class="badge text-bg-success">Verde</span>
+                    <span class="badge text-bg-warning text-dark">Amarelo</span>
+                    <span class="badge text-bg-danger">Vermelho</span>
+                </div>
+                {% for error in form.critic_level.errors %}
+                    <div class="text-danger small mt-1">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="{{ form.compliment.id_for_label }}">{{ form.compliment.label }}</label>
+                {% render_field form.compliment class+="form-control form-control-lg" %}
+                {% for error in form.compliment.errors %}
+                    <div class="text-danger small mt-1">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                <button type="submit" class="btn btn-rl-primary">Salvar relatório</button>
+            </div>
+        </form>
+    {% endif %}
+</div>

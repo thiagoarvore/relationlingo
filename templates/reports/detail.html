@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Detalhe do Relatório | RelationLingo{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-9">
+        <section class="rl-card p-4 p-md-5">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
+                <h1 class="h3 mb-0">Detalhe do relatório</h1>
+                {% if user == report.reporter %}
+                    <a href="{% url 'reports:list' %}" class="btn btn-rl-outline">Voltar</a>
+                {% else %}
+                    <a href="{% url 'reports:about_me' %}" class="btn btn-rl-outline">Voltar</a>
+                {% endif %}
+            </div>
+
+            <div class="small text-secondary mb-3">
+                {{ report.created_at|date:"d/m/y" }}
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-md-6">
+                    <div class="border rounded-3 p-3 h-100">
+                        <div class="small text-secondary mb-1">Reporter</div>
+                        <div>{{ report.reporter.first_name|default:report.reporter.username }}</div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="border rounded-3 p-3 h-100">
+                        <div class="small text-secondary mb-1">Subject</div>
+                        <div>{{ report.subject.first_name|default:report.subject.username }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border rounded-3 p-3 mb-3">
+                <p class="mb-2"><strong>Critica:</strong> {{ report.critic }}</p>
+                <p class="mb-0"><strong>Elogio:</strong> {{ report.compliment }}</p>
+            </div>
+
+            <div class="border rounded-3 p-3">
+                <div class="small text-secondary mb-2">Resposta</div>
+                {% if answer %}
+                    <p class="mb-0">{{ answer.text }}</p>
+                {% else %}
+                    <p class="mb-0 text-secondary">Ainda sem resposta.</p>
+                {% endif %}
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

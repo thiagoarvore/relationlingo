@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Meus Relatórios | RelationLingo{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-xl-10">
+        <section class="rl-card p-4 p-md-5">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
+                <h1 class="h3 mb-0">Meus relatórios diarios</h1>
+                <a href="{% url 'reports:about_me' %}" class="btn btn-rl-outline">Relatórios sobre mim</a>
+            </div>
+
+            <form method="get" class="row g-2 align-items-end mb-4">
+                <div class="col-12 col-md-4">
+                    <label class="form-label mb-1" for="id_date_filter">Filtrar por data</label>
+                    <input
+                        type="date"
+                        id="id_date_filter"
+                        name="date"
+                        class="form-control"
+                        value="{{ filter_date }}"
+                    >
+                </div>
+                <div class="col-6 col-md-auto d-grid">
+                    <button type="submit" class="btn btn-rl-primary">Filtrar</button>
+                </div>
+                <div class="col-6 col-md-auto d-grid">
+                    <a href="{% url 'reports:list' %}" class="btn btn-rl-outline">Limpar</a>
+                </div>
+            </form>
+
+            {% if reports %}
+                <div class="d-none d-md-block table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Para</th>
+                                <th>Nivel</th>
+                                <th class="text-end">Acao</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for report in reports %}
+                                <tr>
+                                    <td>{{ report.created_at|date:"d/m/y" }}</td>
+                                    <td>{{ report.subject.first_name|default:report.subject.username }}</td>
+                                    <td>
+                                        <span
+                                            class="d-inline-block rounded-circle"
+                                            style="
+                                                width: 14px;
+                                                height: 14px;
+                                                box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.08);
+                                                {% if report.critic_level == 1 %}
+                                                    background: #16a34a;
+                                                {% elif report.critic_level == 2 %}
+                                                    background: #eab308;
+                                                {% else %}
+                                                    background: #dc2626;
+                                                {% endif %}
+                                            "
+                                            title="Nivel da critica"
+                                            aria-label="Nivel da critica"
+                                        ></span>
+                                    </td>
+                                    <td class="text-end">
+                                        <a href="{% url 'reports:detail' report.id %}" class="btn btn-sm btn-rl-outline">Abrir</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-grid gap-3 d-md-none">
+                    {% for report in reports %}
+                        <article class="border rounded-4 p-3 bg-white">
+                            <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                                <div>
+                                    <div class="small text-secondary">Data</div>
+                                    <div class="fw-semibold">{{ report.created_at|date:"d/m/y" }}</div>
+                                </div>
+                                <span
+                                    class="d-inline-block rounded-circle"
+                                    style="
+                                        width: 14px;
+                                        height: 14px;
+                                        margin-top: 6px;
+                                        box-shadow: 0 0 0 5px rgba(15, 23, 42, 0.08);
+                                        {% if report.critic_level == 1 %}
+                                            background: #16a34a;
+                                        {% elif report.critic_level == 2 %}
+                                            background: #eab308;
+                                        {% else %}
+                                            background: #dc2626;
+                                        {% endif %}
+                                    "
+                                    title="Nivel da critica"
+                                    aria-label="Nivel da critica"
+                                ></span>
+                            </div>
+                            <div class="mb-3">
+                                <div class="small text-secondary">Para</div>
+                                <div class="fw-semibold">{{ report.subject.first_name|default:report.subject.username }}</div>
+                            </div>
+                            <div class="d-grid">
+                                <a href="{% url 'reports:detail' report.id %}" class="btn btn-rl-primary">Abrir relatório</a>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+
+                {% if is_paginated %}
+                    <nav aria-label="Paginacao de relatorios" class="mt-4">
+                        <ul class="pagination justify-content-center mb-0 flex-wrap">
+                            <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                                <a class="page-link" href="?page={% if page_obj.has_previous %}{{ page_obj.previous_page_number }}{% else %}1{% endif %}{% if filter_date %}&date={{ filter_date }}{% endif %}">Anterior</a>
+                            </li>
+                            <li class="page-item disabled">
+                                <span class="page-link">Pagina {{ page_obj.number }} de {{ paginator.num_pages }}</span>
+                            </li>
+                            <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                                <a class="page-link" href="?page={% if page_obj.has_next %}{{ page_obj.next_page_number }}{% else %}{{ paginator.num_pages }}{% endif %}{% if filter_date %}&date={{ filter_date }}{% endif %}">Proxima</a>
+                            </li>
+                        </ul>
+                    </nav>
+                {% endif %}
+            {% else %}
+                <p class="text-secondary mb-0">Voce ainda nao criou nenhum relatório diario.</p>
+            {% endif %}
+        </section>
+    </div>
+</div>
+{% endblock %}

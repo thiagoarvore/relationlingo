@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}Entrar | RelationLingo{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-5">
+        <section class="rl-card p-4 p-md-5">
+            <header class="mb-4">
+                <h1 class="h3 mb-1">Entrar</h1>
+                <p class="text-secondary mb-0">Acesse sua conta com e-mail e senha.</p>
+            </header>
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.non_field_errors %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% if request.GET.next %}
+                    <input type="hidden" name="next" value="{{ request.GET.next }}">
+                {% endif %}
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {% render_field field class+="form-control form-control-lg" %}
+                        {% for error in field.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+
+                <button type="submit" class="btn btn-rl-primary w-100 py-2">Entrar</button>
+            </form>
+
+            <div class="d-grid gap-2 mt-3">
+                <a href="{% url 'password-reset' %}" class="btn btn-rl-outline">Esqueci minha senha</a>
+                <a href="{% url 'signup' %}" class="btn btn-rl-outline">Criar conta</a>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

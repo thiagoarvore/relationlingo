@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}Criar Conta | RelationLingo{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-md-9 col-lg-6">
+        <section class="rl-card p-4 p-md-5">
+            <header class="mb-4">
+                <h1 class="h3 mb-1">Criar conta</h1>
+                <p class="text-secondary mb-0">Preencha os campos para concluir seu cadastro.</p>
+            </header>
+            {% if invitation %}
+                <div class="alert alert-info">
+                    Voce esta aceitando um convite enviado para <strong>{{ invitation.invited_email }}</strong>.
+                </div>
+            {% endif %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.non_field_errors %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="post" novalidate action="{% if invite_token %}?invite_token={{ invite_token }}{% endif %}">
+                {% csrf_token %}
+                {% for field in form.hidden_fields %}
+                    {{ field }}
+                {% endfor %}
+
+                {% for field in form.visible_fields %}
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {% render_field field class+="form-control form-control-lg" %}
+                        {% if field.help_text %}
+                            <div class="form-text">{{ field.help_text }}</div>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+
+                <button type="submit" class="btn btn-rl-primary w-100 py-2">Cadastrar</button>
+            </form>
+
+            <div class="text-center mt-3">
+                <span class="text-secondary">Ja tem conta?</span>
+                <a href="{% url 'login' %}" class="fw-semibold text-decoration-none">Entrar</a>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

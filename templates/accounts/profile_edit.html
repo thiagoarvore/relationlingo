@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}Editar Perfil | RelationLingo{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-md-9 col-lg-6">
+        <section class="rl-card p-4 p-md-5">
+            <header class="mb-4">
+                <h1 class="h3 mb-1">Editar perfil</h1>
+                <p class="text-secondary mb-0">Atualize seus dados de usuario.</p>
+            </header>
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.non_field_errors %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {% render_field field class+="form-control form-control-lg" %}
+                        {% for error in field.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                    <a href="{% url 'home' %}" class="btn btn-rl-outline">Cancelar</a>
+                    <button type="submit" class="btn btn-rl-primary">Salvar alteracoes</button>
+                </div>
+            </form>
+
+            {% if has_active_pair %}
+                <hr class="my-4">
+                <div class="d-flex flex-column gap-2">
+                    <p class="small text-secondary mb-0">
+                        Precisa encerrar a parceria atual?
+                    </p>
+                    <form method="post" action="{% url 'accounts:pair_undo' %}">
+                        {% csrf_token %}
+                        <button
+                            type="submit"
+                            class="btn btn-outline-danger"
+                            onclick="return confirm('Tem certeza que deseja desfazer a parceria?')"
+                        >
+                            Desfazer parceria
+                        </button>
+                    </form>
+                </div>
+            {% endif %}
+        </section>
+    </div>
+</div>
+{% endblock %}

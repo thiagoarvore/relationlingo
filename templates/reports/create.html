@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Novo Relatório Diario | RelationLingo{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+        <section class="rl-card p-4 p-md-5">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+                <h1 class="h3 mb-0">Novo relatório diario</h1>
+                <a href="{% url 'reports:list' %}" class="btn btn-rl-outline">Ver meus relatórios</a>
+            </div>
+
+            {% if has_pair and pair_user %}
+                <p class="text-secondary mb-4">
+                    Este relatório sera enviado para <strong>{{ pair_user.first_name|default:pair_user.username }}</strong>.
+                </p>
+            {% else %}
+                <div class="alert alert-warning mb-4">
+                    Voce precisa ter um par para criar um relatório diario.
+                </div>
+            {% endif %}
+
+            {% include "reports/partials/daily_report_form.html" %}
+        </section>
+    </div>
+</div>
+{% endblock %}
