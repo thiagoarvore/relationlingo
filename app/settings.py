@@ -38,6 +38,7 @@ ALLOWED_HOSTS = [
     "services.thinkdigital.com.br",
     "localhost",
     "127.0.0.1",
+    "3.84.179.178",
 ]
 
 
