@@ -1,6 +1,5 @@
 from django.contrib import messages
-from django.db.models import Q
-from django.db.models import Exists, OuterRef
+from django.db.models import Exists, OuterRef, Q
 from django.db.models.functions import TruncDate
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
@@ -166,9 +165,9 @@ class DailyReportListView(ListView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        queryset = DailyReport.objects.filter(reporter=self.request.user).select_related(
-            "subject"
-        )
+        queryset = DailyReport.objects.filter(
+            reporter=self.request.user
+        ).select_related("subject")
         filter_date = self.request.GET.get("date", "").strip()
         if filter_date:
             current_tz = timezone.get_current_timezone()

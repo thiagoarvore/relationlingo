@@ -58,11 +58,15 @@ class AnswerCreateViewTests(TestCase):
         self.client.force_login(self.subject_user)
         url = reverse("answers:create", kwargs={"report_id": report.id})
 
-        response = self.client.post(url, {"text": "Tentativa no mesmo dia"}, follow=True)
+        response = self.client.post(
+            url, {"text": "Tentativa no mesmo dia"}, follow=True
+        )
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Answer.objects.count(), 0)
-        self.assertContains(response, "A resposta nao pode ser feita no mesmo dia do relatório.")
+        self.assertContains(
+            response, "A resposta nao pode ser feita no mesmo dia do relatório."
+        )
 
     def test_non_subject_cannot_answer(self):
         report = self._create_report_about_subject()

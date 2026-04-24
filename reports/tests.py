@@ -45,7 +45,9 @@ class DailyReportCreateViewTests(TestCase):
         response = self.client.get(self.create_url)
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Voce precisa ter um par para criar um relatório diario.")
+        self.assertContains(
+            response, "Voce precisa ter um par para criar um relatório diario."
+        )
         self.assertNotContains(response, "<form")
 
     def test_post_without_pair_is_blocked_in_back(self):
@@ -54,7 +56,9 @@ class DailyReportCreateViewTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(DailyReport.objects.count(), 0)
-        self.assertContains(response, "Voce precisa ter um par para criar um relatório diario.")
+        self.assertContains(
+            response, "Voce precisa ter um par para criar um relatório diario."
+        )
 
     def test_htmx_post_without_pair_is_blocked(self):
         self.client.force_login(self.user)
@@ -141,7 +145,9 @@ class DailyReportCreateViewTests(TestCase):
         )
         self.assertEqual(response.status_code, 403)
         self.assertEqual(DailyReport.objects.count(), 1)
-        self.assertContains(response, "Relatório de hoje já preenchido", status_code=403)
+        self.assertContains(
+            response, "Relatório de hoje já preenchido", status_code=403
+        )
 
     def test_navbar_hides_report_button_when_today_report_exists(self):
         Pair.objects.create(one=self.user, two=self.partner)
@@ -240,7 +246,8 @@ class DailyReportListViewTests(TestCase):
             response, reverse("reports:detail", kwargs={"report_id": today_report.id})
         )
         self.assertNotContains(
-            response, reverse("reports:detail", kwargs={"report_id": yesterday_report.id})
+            response,
+            reverse("reports:detail", kwargs={"report_id": yesterday_report.id}),
         )
         self.assertContains(response, f'value="{today_str}"')
 
@@ -264,7 +271,8 @@ class DailyReportListViewTests(TestCase):
         response = self.client.get(self.about_me_url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(
-            response, reverse("reports:detail", kwargs={"report_id": about_me_report.id})
+            response,
+            reverse("reports:detail", kwargs={"report_id": about_me_report.id}),
         )
         self.assertNotContains(response, "Responder")
 
@@ -305,7 +313,8 @@ class DailyReportListViewTests(TestCase):
             response, reverse("reports:detail", kwargs={"report_id": report_today.id})
         )
         self.assertNotContains(
-            response, reverse("reports:detail", kwargs={"report_id": report_yesterday.id})
+            response,
+            reverse("reports:detail", kwargs={"report_id": report_yesterday.id}),
         )
         self.assertContains(response, f'value="{today_str}"')
 

@@ -1,11 +1,11 @@
 from urllib.parse import urlencode
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login
-from django.conf import settings
 from django.core.mail import send_mail
-from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.views.generic import FormView, View
 
@@ -40,9 +40,11 @@ class PairInviteView(FormView):
             reverse("pairs:invite_accept", kwargs={"token": invitation.token})
         )
         inviter_name = self.request.user.first_name or self.request.user.username
-        invited_user_exists = get_user_model().objects.filter(
-            email__iexact=invitation.invited_email
-        ).exists()
+        invited_user_exists = (
+            get_user_model()
+            .objects.filter(email__iexact=invitation.invited_email)
+            .exists()
+        )
         html_template_name = (
             "email_templates/pair_invite_existing_profile.html"
             if invited_user_exists
@@ -113,11 +115,15 @@ class PairInvitationAcceptView(View):
 
         invited_email = invitation.invited_email.strip().lower()
         user_model = get_user_model()
-        invited_user_exists = user_model.objects.filter(email__iexact=invited_email).exists()
+        invited_user_exists = user_model.objects.filter(
+            email__iexact=invited_email
+        ).exists()
 
         if not request.user.is_authenticated:
             if invited_user_exists:
-                messages.info(request, "Entre com o e-mail convidado para aceitar o convite.")
+                messages.info(
+                    request, "Entre com o e-mail convidado para aceitar o convite."
+                )
                 login_url = reverse("login")
                 query = urlencode({"next": request.path})
                 return redirect(f"{login_url}?{query}")
@@ -157,7 +163,9 @@ class InvitationSignUpView(FormView):
         if not invite_token:
             return initial
 
-        invitation = PairInvitation.objects.filter(token=invite_token, accepted_at__isnull=True).first()
+        invitation = PairInvitation.objects.filter(
+            token=invite_token, accepted_at__isnull=True
+        ).first()
         if invitation:
             initial["email"] = invitation.invited_email
         return initial
@@ -188,9 +196,14 @@ class InvitationSignUpView(FormView):
             messages.success(self.request, "Conta criada com sucesso.")
             return super().form_valid(form)
 
-        invitation = PairInvitation.objects.filter(token=invite_token, accepted_at__isnull=True).first()
+        invitation = PairInvitation.objects.filter(
+            token=invite_token, accepted_at__isnull=True
+        ).first()
         if not invitation:
-            messages.info(self.request, "Conta criada, mas o convite nao foi encontrado ou ja foi usado.")
+            messages.info(
+                self.request,
+                "Conta criada, mas o convite nao foi encontrado ou ja foi usado.",
+            )
             return super().form_valid(form)
 
         if user.email.strip().lower() != invitation.invited_email.strip().lower():

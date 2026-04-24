@@ -1,5 +1,5 @@
-from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.test import TestCase
 from django.urls import reverse
 
 from pairs.models import Pair
@@ -26,7 +26,11 @@ class UserProfileUpdateViewTests(TestCase):
         self.client.force_login(self.user)
         response = self.client.post(
             self.url,
-            {"first_name": "Novo", "last_name": "Sobrenome", "email": "novo@example.com"},
+            {
+                "first_name": "Novo",
+                "last_name": "Sobrenome",
+                "email": "novo@example.com",
+            },
             follow=True,
         )
 

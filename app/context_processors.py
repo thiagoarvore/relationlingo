@@ -26,7 +26,9 @@ def navbar_pair_context(request):
                         reporter=request.user,
                         active=True,
                     )
-                    .annotate(local_created_date=TruncDate("created_at", tzinfo=current_tz))
+                    .annotate(
+                        local_created_date=TruncDate("created_at", tzinfo=current_tz)
+                    )
                     .filter(local_created_date=timezone.localdate())
                     .exists()
                 )

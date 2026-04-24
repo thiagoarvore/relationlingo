@@ -6,12 +6,17 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('reports', '0001_initial'),
+        ("reports", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='dailyreport',
-            options={'default_permissions': ('add', 'view'), 'ordering': ['-created_at'], 'verbose_name': 'Relatório diário', 'verbose_name_plural': 'Relatórios diários'},
+            name="dailyreport",
+            options={
+                "default_permissions": ("add", "view"),
+                "ordering": ["-created_at"],
+                "verbose_name": "Relatório diário",
+                "verbose_name_plural": "Relatórios diários",
+            },
         ),
     ]

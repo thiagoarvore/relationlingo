@@ -20,5 +20,7 @@ class PairInviteForm(forms.Form):
         email = self.cleaned_data["email"].strip().lower()
         if self.request and self.request.user.is_authenticated:
             if email == self.request.user.email.strip().lower():
-                raise forms.ValidationError("Voce nao pode enviar convite para seu proprio e-mail.")
+                raise forms.ValidationError(
+                    "Voce nao pode enviar convite para seu proprio e-mail."
+                )
         return email

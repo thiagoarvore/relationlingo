@@ -5,8 +5,9 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import UpdateView, View
 
-from .forms import UserProfileForm
 from pairs.models import Pair
+
+from .forms import UserProfileForm
 
 
 class UserProfileUpdateView(LoginRequiredMixin, UpdateView):

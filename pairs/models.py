@@ -5,7 +5,6 @@ from django.db import models
 from django.utils import timezone
 from django_base_kit.models import BaseModel
 
-
 user_model = settings.AUTH_USER_MODEL
 
 

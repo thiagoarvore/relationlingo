@@ -51,7 +51,9 @@ class PairInviteViewTests(TestCase):
 
     def test_logged_user_can_submit_invite_email_and_send_mail(self):
         self.client.force_login(self.user)
-        response = self.client.post(self.url, {"email": "amor@example.com"}, follow=True)
+        response = self.client.post(
+            self.url, {"email": "amor@example.com"}, follow=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Convite enviado para amor@example.com.")
 

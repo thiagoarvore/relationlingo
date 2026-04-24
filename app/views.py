@@ -9,8 +9,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.http import url_has_allowed_host_and_scheme
-from django.views.generic import FormView
-from django.views.generic import TemplateView
+from django.views.generic import FormView, TemplateView
 
 from pairs.models import Pair
 from reports.models import DailyReport
@@ -78,13 +77,17 @@ class HomeView(LoginRequiredMixin, TemplateView):
         ]
 
         partner_user = (
-            Pair.objects.filter(Q(one=self.request.user) | Q(two=self.request.user), active=True)
+            Pair.objects.filter(
+                Q(one=self.request.user) | Q(two=self.request.user), active=True
+            )
             .select_related("one", "two")
             .first()
         )
         if partner_user:
             partner_user = (
-                partner_user.two if partner_user.one_id == self.request.user.id else partner_user.one
+                partner_user.two
+                if partner_user.one_id == self.request.user.id
+                else partner_user.one
             )
 
         current_tz = timezone.get_current_timezone()
@@ -96,18 +99,18 @@ class HomeView(LoginRequiredMixin, TemplateView):
 
         user_report_days = {
             local_date.day
-            for local_date in month_reports_qs.filter(reporter=self.request.user).values_list(
-                "local_created_date", flat=True
-            )
+            for local_date in month_reports_qs.filter(
+                reporter=self.request.user
+            ).values_list("local_created_date", flat=True)
             if local_date
         }
         partner_report_days = set()
         if partner_user:
             partner_report_days = {
                 local_date.day
-                for local_date in month_reports_qs.filter(reporter=partner_user).values_list(
-                    "local_created_date", flat=True
-                )
+                for local_date in month_reports_qs.filter(
+                    reporter=partner_user
+                ).values_list("local_created_date", flat=True)
                 if local_date
             }
 
@@ -137,9 +140,13 @@ class HomeView(LoginRequiredMixin, TemplateView):
                 )
             calendar_weeks.append(row)
 
-        context["calendar_month_label"] = f"{month_names_pt_br[current_month]} {current_year}"
+        context["calendar_month_label"] = (
+            f"{month_names_pt_br[current_month]} {current_year}"
+        )
         context["calendar_weekdays"] = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"]
         context["calendar_weeks"] = calendar_weeks
         context["calendar_active_days"] = len(active_days)
-        context["calendar_total_days"] = calendar.monthrange(current_year, current_month)[1]
+        context["calendar_total_days"] = calendar.monthrange(
+            current_year, current_month
+        )[1]
         return context

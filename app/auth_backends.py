@@ -27,4 +27,6 @@ class EmailOrUsernameModelBackend(ModelBackend):
                     return user
             return None
 
-        return super().authenticate(request, username=username, password=password, **kwargs)
+        return super().authenticate(
+            request, username=username, password=password, **kwargs
+        )
